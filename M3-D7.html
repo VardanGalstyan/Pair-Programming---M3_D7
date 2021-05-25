@@ -20,8 +20,8 @@
       1 DRIVER, 1 NAVIGATOR.
       1 Exercise each. Use GitHub to share the code.
       Less exercise, more complicated. 
-      Ex1) Get and display, using an asynchronous pattern, the users from: https://jsonplaceholder.typicode.com/users 
-      Ex2) Create a dropdown (<select>) that allows the user to select between name, username and email. 
+      Ex1) Get and display, using an asynchronous pattern, the users from: https://jsonplaceholder.typicode.com/users // Done
+      Ex2) Create a dropdown (<select>) that allows the user to select between name, username and email. //Done
            Create then a filter. When the user types in something, you should filter the user based on the input and on the value of the select.
            Es.: select on NAME. Filter input = Glenna, only user id number 9 should remain
       Ex3) Create a function that, from the list of users, extracts only the names
@@ -44,6 +44,35 @@
     -->
   </head>
   <body>
+    <h1 class="text-center mt-3">User Selection</h1>
+    <section class="mt-5">
+      <div class="container">
+        <div class="d-flex">
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Select
+            </button>
+            <div id="dropdown" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#">name</a>
+              <a class="dropdown-item" href="#">username</a>
+              <a class="dropdown-item" href="#">email</a>
+            </div>
+          </div>
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="button" id="button-addon2">Search</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="userlist d-flex my-4 justify-content-center">
+            <!-- <ul id="name" class="list-group"><li class="list-group-item">Andre</li></ul> -->
+            <ul id="name" class="list-group"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
     <script
       src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
       integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
@@ -58,11 +87,62 @@
       window.onload = () => {
         extractData()
       }
+      const mySearchList = document.getElementById("name")//done
+      const userFirstFamilyName = document.querySelector(".dropdown-menu a:first-child").innerText
+      const userName = document.querySelector(".dropdown-menu a:nth-child(2)").innerText
+      const userEmail = document.querySelector(".dropdown-menu a:last-child").innerText
+      const dropDownValue = document.getElementById("dropdown")
+      const inputValue = document.querySelector(".input-group>input")
+      const inputButton = document.querySelector(".input-group button")
+
 
       const extractData = function(){
         fetch('https://jsonplaceholder.typicode.com/users')
             .then(response => response.json())
-            .then(data => console.log(data));
+            .then(users => {
+              console.log(users);
+                let key
+              
+                dropDownValue.addEventListener("click", (event) => {
+                  mySearchList.innerHTML = ""
+                  if(event.target.innerText === userFirstFamilyName){
+                    key = "name"
+                  } else if(event.target.innerText === userName){
+                    key = "username"
+                  } else if(event.target.innerText === userEmail)
+                    key = "email"
+                
+                                
+                    let newArray = []
+                    users.forEach(user => {
+                      mySearchList.innerHTML += `<li class="list-group-item">${user[key]}</li>`
+                      newArray.push(user[key])
+                    });
+
+
+//                     function filterItems(arr, query) {
+//   return arr.filter(function(el) {
+//       return el.toLowerCase().indexOf(query.toLowerCase()) !== -1
+//   })
+// }  
+                    function filterUsers(arr,query){
+                      return arr.filter(el => {
+                         el.toLowerCase().indexOf(query.toLowerCase()) !== -1
+                      })
+                    }
+                    
+                    inputButton.addEventListener("click", () => {
+                      if(newArray.includes(inputValue.value)){
+                        console.log("ok");
+                      } else {
+                        console.log("no way");
+                      }
+                    })
+
+
+                    console.log(newArray);
+                })
+            });
       }
 
     </script>
